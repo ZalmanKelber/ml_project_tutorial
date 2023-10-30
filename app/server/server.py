@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 import util
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/get_location_names')
 def get_location_names():
@@ -12,15 +14,15 @@ def get_location_names():
     return response
 
 @app.route('/predict_home_price', methods=['POST'])
+@cross_origin()
 def get_predict_home_price():
-    print('TESTING')
-    print(request.form.get('bedrooms'))
-    bedrooms = int(request.form.get('bedrooms'))
-    bathrooms = int(request.form.get('bathrooms'))
-    square_feet = float(request.form.get('square_feet'))
-    location = request.form.get('location')
+    bedrooms = int(request.data.get('bedrooms'))
+    bathrooms = int(request.data.get('bathrooms'))
+    square_feet = float(request.data.get('square_feet'))
+    location = request.data.get('location')
+    price = util.get_predicted_price(bedrooms, square_feet, bathrooms, location)
     response = jsonify({
-        'price_prediction': util.get_predicted_price(bedrooms, square_feet, bathrooms, location)
+        'price_prediction': price
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response

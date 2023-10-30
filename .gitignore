@@ -1,1 +1,3 @@
 model/data
+app/client/client.css # mostly copy and pasted from original tutorial
+app/client/html.css
